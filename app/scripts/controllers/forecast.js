@@ -8,16 +8,16 @@
  * Controller of the forecastApp
  */
 angular.module('forecastApp')
-  .controller('ForecastController', ['$http', function ($http) {
+  .controller('ForecastController', ['$http', '$q', function ($http, $q) {
     var weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday',
               'Friday', 'Saturday',],
         that = this;
     //default zipcode
     that.zip = 60661;
 
-    //update forecast based on zip
-    //changes forecast array and city name
-    that.updateForecast = function updateForecast(){
+    //retrieve six day forecast for current zip
+    //returns promise for forecast request
+    function getForecast(){
       var req = {
         method: 'GET',
         url: 'http://api.openweathermap.org/data/2.5/forecast/daily?zip=' + 
@@ -25,22 +25,21 @@ angular.module('forecastApp')
       };
 
       //request the forecast
-      $http(req).then(function(response){
+      return $http(req).then(function(response){
         var result = response.data,
             i,
             end = result.list.length,
             day,
-            date = new Date().getDay();
+            date = new Date().getDay(),
+            forecast = [];
 
         //update city name
         that.city = result.city.name;
 
-        that.forecast = [];
-
         for (i = 0; i < end; i++){
           day = result.list[i];
           //build forecast from response data
-          that.forecast.push({
+          forecast.push({
             'weekday': weekdays[date],
             'temp': Math.floor(day.temp.day),
             'high': Math.floor(day.temp.max),
@@ -51,36 +50,57 @@ angular.module('forecastApp')
           //represents day of the week
           date = (date + 1) % 7;
         }
-        console.log(that.forecast);
-        console.log(result);
+        return forecast;
       }, function(){
         //TODO add error message
         console.log('request failed');
       });
-    };
+    }
 
-    //change zipcode to that of user's current location
-    //if location unavailable, return false
-    that.updateZip = function updateZip(){
+    //use geolocation to get current position
+    //returns promise for location request
+    function getLocation(){
+      var deferred = $q.defer();
       if(window.navigator.geolocation){
-        //get coordinates
-        window.navigator.geolocation.getCurrentPosition(function(pos){
-          //then translate to an address
-          $http.get('http://maps.googleapis.com/maps/api/geocode/json?latlng='+pos.coords.latitude+','+pos.coords.longitude).then(function(res){
-            //and extract zip code
-            //TODO only do this if the zip has changed
-            //after updating the zip, also update forecast
-              that.zip = res.data.results[0].address_components.slice(-1)[0].short_name;
-              console.log(that.zip);
+        window.navigator.geolocation.getCurrentPosition(deferred.resolve, deferred.reject);
+      } else {
+        deferred.reject(new Error("Browser does not support geolocation"));
+      }
+      return deferred.promise;
+    }
+
+    //use google maps api to translate coordinates into zip
+    //returns promise for api call
+    function getZip(lat, long){
+      return $http.get('http://maps.googleapis.com/maps/api/geocode/json?latlng='+lat+','+long).then(function(res){
+          var i,
+              arr = res.data.results[0].address_components,
+              end = arr.length;
+          for (i = 0; i < end; i++){
+            if(arr[i].types.indexOf('postal_code') !== -1){
+              return arr[i].short_name;
+            }
+          }
+      });
+    }
+
+    //get position, translate to zip, request and update forecast
+    function updateForecast(){
+      getLocation().then(function(position){
+        console.log(position);
+        getZip(position.coords.latitude, position.coords.longitude)
+        .then(function(zip){
+          that.zip = zip;
+          getForecast().then(function(forecast){
+            that.forecast = forecast;
           });
         });
-      } else {
-        //TODO display error message to user, tell them geolocation is not supported
-        return false;
-      }
-    };
+      }, function(err){
+        console.err(err);
+      });
+    }
 
     //Get the initial forecast for default zip
-    // that.updateForecast();
+    updateForecast();
 
   }]);
