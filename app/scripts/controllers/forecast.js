@@ -12,8 +12,6 @@ angular.module('forecastApp')
     var weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday',
               'Friday', 'Saturday',],
         that = this;
-    //default zipcode
-    that.zip = 60661;
 
     //retrieve six day forecast for current zip
     //returns promise for forecast request
@@ -64,7 +62,7 @@ angular.module('forecastApp')
       if(window.navigator.geolocation){
         window.navigator.geolocation.getCurrentPosition(deferred.resolve, deferred.reject);
       } else {
-        deferred.reject(new Error("Browser does not support geolocation"));
+        deferred.reject("Browser does not support geolocation");
       }
       return deferred.promise;
     }
@@ -85,7 +83,7 @@ angular.module('forecastApp')
     }
 
     //get position, translate to zip, request and update forecast
-    function updateForecast(){
+    that.updateForecast = function updateForecast(){
       getLocation().then(function(position){
         console.log(position);
         getZip(position.coords.latitude, position.coords.longitude)
@@ -96,11 +94,14 @@ angular.module('forecastApp')
           });
         });
       }, function(err){
-        console.err(err);
+        //if position unavailable, use default zip
+        //TODO display error message to user
+          that.zip = '60661';
+          getForecast().then(function(forecast){
+            that.forecast = forecast;
+          });
+        console.log(err);
       });
     }
-
-    //Get the initial forecast for default zip
-    updateForecast();
 
   }]);
