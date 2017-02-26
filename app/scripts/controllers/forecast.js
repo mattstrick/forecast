@@ -9,9 +9,13 @@
  */
 angular.module('forecastApp')
   .controller('ForecastController', ['$http', '$q', function ($http, $q) {
+
     var weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday',
               'Friday', 'Saturday',],
         that = this;
+
+    //only accept 5 digit zip codes
+    that.validZipRegex = /(^\d{5}$)/;
 
     //retrieve six day forecast for current zip
     //returns promise for forecast request
@@ -82,10 +86,19 @@ angular.module('forecastApp')
       });
     }
 
-    //get position, translate to zip, request and update forecast
-    that.updateForecast = function updateForecast(){
+    //update with user supplied zip code
+    that.manualUpdate = function manualUpdate(){
+      if(that.validZipRegex.test(that.zip)){
+        getForecast().then(function(forecast){
+          that.forecast = forecast;
+        });
+      }
+    };
+
+    //update using geolocation
+    //get coordinates, translate to zip, then get forecast
+    that.autoUpdate = function autoUpdate(){
       getLocation().then(function(position){
-        console.log(position);
         getZip(position.coords.latitude, position.coords.longitude)
         .then(function(zip){
           that.zip = zip;
@@ -100,8 +113,7 @@ angular.module('forecastApp')
           getForecast().then(function(forecast){
             that.forecast = forecast;
           });
-        console.log(err);
       });
-    }
+    };
 
   }]);

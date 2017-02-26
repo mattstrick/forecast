@@ -1,32 +1,43 @@
 <div class="row">
   <div class="col-sm-10 col-sm-offset-1">
-  <form ng-submit="forecastCtrl.updateZip()">
+  <form name="zipForm"
+        ng-submit="forecastCtrl.manualUpdate()"
+        ng-class="{'submitted': submitted}">
         <div class="input-group">
           <span class="input-group-btn">
             <button type="button" class="btn btn-default btn-lg"
-                    ng-click="forecastCtrl.updateForecast()">
+                    ng-click="forecastCtrl.autoUpdate()">
               <span class="glyphicon glyphicon-map-marker" aria-hidden="true">
               </span>
             </button>
           </span>
           <input class="form-control input-lg"
                   ng-model="forecastCtrl.zip"
-                  placeholder="Enter a zip code">
+                  ng-pattern="forecastCtrl.validZipRegex"
+                  placeholder="Enter a zip code"
+                  required>
           </input>
           <span class="input-group-btn">
-            <button type="submit" class="btn btn-primary btn-lg">Search</button>
+            <button type="submit" class="btn btn-primary btn-lg">Submit</button>
           </span>
         </div>
-        <span ng-if="searchCtrl.warning">
-          Please select a city
-        </span>
-      </form>
-    <h1> Forecast for {{forecastCtrl.city}} </h1>
-    <ul ng-repeat="day in forecastCtrl.forecast">
-      <li> {{ day.weekday }} </li>
-      <li> Temperature: {{ day.temp }} </li>
-      <li> High: {{ day.high }} </li>
-      <li> Low: {{ day.low }} </li>
-    </ul>
+         <div ng-if="zipForm.$invalid && zipForm.$submitted"
+              class="alert alert-danger" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign"
+                  aria-hidden="true">
+            </span>
+            <span class="sr-only">Error:</span>
+            Enter a valid 5 digit US zip code
+        </div>
+    </form>
+    <div ng-if="forecastCtrl.forecast">
+      <h1> Forecast for {{forecastCtrl.city}} </h1>
+      <ul ng-repeat="day in forecastCtrl.forecast">
+        <li> {{ day.weekday }} </li>
+        <li> Temperature: {{ day.temp }} </li>
+        <li> High: {{ day.high }} </li>
+        <li> Low: {{ day.low }} </li>
+      </ul>
+    </div>
   </div>
 </div>
