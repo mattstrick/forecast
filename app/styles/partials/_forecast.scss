@@ -1,28 +1,28 @@
+ h2 {
+  text-shadow: #d9d9d9 2px 2px 1px;
+}
+
 .forecast {
   display: flex;
   flex-wrap: wrap;
-}
 
-ul {
-  list-style: none;
-  box-sizing: border-box;
-  background-color: #999999;
-  color: #fff;
-  width: 180px;
-  margin-left: 20px;
-  margin-top: 20px;
-  margin-bottom: 0px;
-  padding: 10px;
-  @include border-radius(5px);
-  @include box-shadow(1px, 1px, 2px, 3px, #d9d9d9);
-
-  h2 {
-    margin-top: 10px;
+  ul {
+    list-style: none;
+    box-sizing: border-box;
+    background-color: #999999;
+    color: #fff;
+    width: 180px;
+    margin-left: 20px;
+    margin-top: 20px;
+    margin-bottom: 0px;
+    padding: 10px;
+    @include border-radius(5px);
+    @include box-shadow(1px, 1px, 2px, 3px, #d9d9d9);
   }
-}
 
-ul:first-child {
-  background-color: #41b6c4;
+  ul:first-child {
+    background-color: #41b6c4;
+  }
 }
 
 li {
