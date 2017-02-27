@@ -3,11 +3,19 @@
 This project is generated with [yo angular generator](https://github.com/yeoman/generator-angular)
 version 0.15.1.
 
-A simple Angular app for getting a six day forecast via OpenWeatherMap's waether API.
-
-This project is viewable at: https://jonpo.github.io/forecast/
+A simple Angular app for getting a six day forecast via OpenWeatherMap's weather API.
 
 ##Running locally
+
+###The easy way
+
+- Verify that node and npm are installed: node --version && npm --version
+
+- Install http-server: npm install http-server -g
+
+- Serve the built site: cd dist && http-server
+
+###The hard way
 
 - Verify that node and npm are installed: node --version && npm --version
 
@@ -20,6 +28,8 @@ This project is viewable at: https://jonpo.github.io/forecast/
 - Install bower dependencies: bower install
 
 - Install node dependencies: npm install
+
+- Serve: grunt serve
 
 ## Build & development
 
