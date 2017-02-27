@@ -12,7 +12,7 @@ angular.module('forecastApp')
 
     var that = this;
     //only accept 5 digit zip codes
-    that.validZipRegex = /(^\d{5}$)/;    
+    that.validZipRegex = /(^\d{5}$)/;
 
     function update(forecast){
       that.city = forecast[0];
@@ -23,7 +23,13 @@ angular.module('forecastApp')
     that.manualUpdate = function manualUpdate(){
       if(that.validZipRegex.test(that.zip)){
         request.getForecast(that.zip).then(function(forecast){
-          update(forecast);
+          if (!forecast){
+            that.warning = 'No forecast found. Zip code may be invalid.';
+          } else {
+             //remove warning if present
+            that.warning = '';
+            update(forecast);
+          }
         });
       } else {
         return false;
@@ -36,7 +42,7 @@ angular.module('forecastApp')
       that.loading = true;
       request.getLocation().then(function(position){
         //remove geolocation warning if present
-        that.warning = false;
+        that.warning = '';
         request.getZip(position.coords.latitude, position.coords.longitude)
         .then(function(zip){
           that.zip = zip;
@@ -47,7 +53,7 @@ angular.module('forecastApp')
         });
       }, function(){
         //tell user that geolocation is disabled
-          that.warning = true;
+          that.warning = 'Geolocation is not enabled';
           //if position unavailable, use default zip
           that.zip = '60661';
           request.getForecast(that.zip).then(function(forecast){

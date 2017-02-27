@@ -6,13 +6,13 @@ describe('Service: request', function () {
   beforeEach(module('forecastApp'));
 
   // instantiate service
-  var request;
-  beforeEach(inject(function (_request_) {
+  var request,
+      httpBackend;
+  beforeEach(inject(function (_request_, $httpBackend) {
     request = _request_;
+    httpBackend = $httpBackend;
   }));
 
-  it('should do something', function () {
-    expect(!!request).toBe(true);
-  });
+  //TODO add tests
 
 });

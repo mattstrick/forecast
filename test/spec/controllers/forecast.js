@@ -6,16 +6,14 @@ describe('Controller: ForecastController', function () {
   beforeEach(module('forecastApp'));
 
   var ForecastCtrl,
-    scope,
-    httpBackend;
+    scope;
 
   // Initialize the controller and a mock scope
-  beforeEach(inject(function ($controller, $rootScope, $httpBackend) {
+  beforeEach(inject(function ($controller, $rootScope) {
     scope = $rootScope.$new();
     ForecastCtrl = $controller('ForecastController', {
       $scope: scope
     });
-    httpBackend = $httpBackend;
   }));
 
   it('should reject invalid zip codes', function () {
@@ -26,6 +24,5 @@ describe('Controller: ForecastController', function () {
     ForecastCtrl.zip = '60661-6600';
     expect(ForecastCtrl.manualUpdate()).toBe(false);
   });
-
-
+  
 });
