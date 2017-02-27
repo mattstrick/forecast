@@ -6,19 +6,26 @@ describe('Controller: ForecastController', function () {
   beforeEach(module('forecastApp'));
 
   var ForecastCtrl,
-    scope;
+    scope,
+    httpBackend;
 
   // Initialize the controller and a mock scope
-  beforeEach(inject(function ($controller, $rootScope) {
+  beforeEach(inject(function ($controller, $rootScope, $httpBackend) {
     scope = $rootScope.$new();
     ForecastCtrl = $controller('ForecastController', {
       $scope: scope
-      // place here mocked dependencies
     });
+    httpBackend = $httpBackend;
   }));
 
   it('should reject invalid zip codes', function () {
     ForecastCtrl.zip = '1234';
     expect(ForecastCtrl.manualUpdate()).toBe(false);
+    ForecastCtrl.zip = 'zip';
+    expect(ForecastCtrl.manualUpdate()).toBe(false);
+    ForecastCtrl.zip = '60661-6600';
+    expect(ForecastCtrl.manualUpdate()).toBe(false);
   });
+
+
 });

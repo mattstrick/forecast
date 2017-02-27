@@ -75,7 +75,7 @@ angular.module('forecastApp')
       if(window.navigator.geolocation){
         window.navigator.geolocation.getCurrentPosition(deferred.resolve, deferred.reject);
       } else {
-        deferred.reject("Browser does not support geolocation");
+        deferred.reject('Browser does not support geolocation');
       }
       return deferred.promise;
     }
