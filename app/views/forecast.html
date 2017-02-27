@@ -1,0 +1,19 @@
+<div class="row">
+<div class="col-sm-8 col-sm-offset-2">
+<div ng-if="forecastCtrl.forecast">
+<h2> Forecast for {{forecastCtrl.city}} </h2>
+  <div class="forecast">
+    <ul ng-repeat="day in forecastCtrl.forecast">
+      <li> 
+        <h3> {{ day.weekday }} </h3>
+      </li>
+      <li> {{ day.temp }} &deg F</li>
+      <li> High: {{ day.high }} &deg F</li>
+      <li> Low: {{ day.low }} &deg F</li>
+      <li> {{ day.weather }}</li>
+      <li> Cloud cover: {{ day.sky }} &#37 </li>
+    </ul>
+  </div>
+</div>
+</div>
+</div>

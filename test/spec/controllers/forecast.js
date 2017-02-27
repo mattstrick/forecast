@@ -17,7 +17,8 @@ describe('Controller: ForecastController', function () {
     });
   }));
 
-  // it('should attach a list of awesomeThings to the scope', function () {
-  //   expect(MainCtrl.awesomeThings.length).toBe(3);
-  // });
+  it('should reject invalid zip codes', function () {
+    ForecastCtrl.zip = '1234';
+    expect(ForecastCtrl.manualUpdate()).toBe(false);
+  });
 });

@@ -33,7 +33,8 @@ angular.module('forecastApp')
             end = result.list.length,
             day,
             date = new Date().getDay(),
-            forecast = [];
+            forecast = [],
+            current;
 
         //update city name
         that.city = result.city.name;
@@ -41,14 +42,22 @@ angular.module('forecastApp')
         for (i = 0; i < end; i++){
           day = result.list[i];
           //build forecast from response data
-          forecast.push({
+          current = {
             'weekday': weekdays[date],
             'temp': Math.floor(day.temp.day),
             'high': Math.floor(day.temp.max),
             'low': Math.floor(day.temp.min),
             'sky': day.clouds,
             'weather': day.weather[0].main
-          });
+          };
+
+          if (current.weather === 'Snow'){
+            current.weather = 'Chance of snow';
+          } else if (current.weather === 'Rain'){
+            current.weather = 'Chance of rain';
+          }
+
+          forecast.push(current);
           //represents day of the week
           date = (date + 1) % 7;
         }
@@ -92,25 +101,33 @@ angular.module('forecastApp')
         getForecast().then(function(forecast){
           that.forecast = forecast;
         });
+      } else {
+        return false;
       }
     };
 
     //update using geolocation
     //get coordinates, translate to zip, then get forecast
     that.autoUpdate = function autoUpdate(){
+      that.loading = true;
       getLocation().then(function(position){
+        //remove geolocation warning if present
+        that.warning = false;
         getZip(position.coords.latitude, position.coords.longitude)
         .then(function(zip){
           that.zip = zip;
           getForecast().then(function(forecast){
             that.forecast = forecast;
+            that.loading = false;
           });
         });
-      }, function(err){
-        //if position unavailable, use default zip
-        //TODO display error message to user
+      }, function(){
+        //tell user that geolocation is disabled
+          that.warning = true;
+          //if position unavailable, use default zip
           that.zip = '60661';
           getForecast().then(function(forecast){
+            that.loading = false;
             that.forecast = forecast;
           });
       });

@@ -1,0 +1,47 @@
+<div class="row">
+<div class="col-sm-8 col-sm-offset-2">
+
+  <div ng-if="forecastCtrl.warning"
+        class="alert alert-danger" role="alert">
+      <span class="glyphicon glyphicon-exclamation-sign"
+            aria-hidden="true">
+      </span>
+      <span class="sr-only">Error:</span>
+      Geolocation is not enabled
+  </div>
+
+<form name="zipForm"
+        ng-submit="forecastCtrl.manualUpdate()"
+        ng-class="{'submitted': submitted}">
+  <div class="input-group">
+    <span class="input-group-btn">
+      <button type="button" class="btn btn-default btn-lg"
+              ng-click="forecastCtrl.autoUpdate()">
+        <span class="glyphicon glyphicon-map-marker" aria-hidden="true">
+        </span>
+      </button>
+    </span>
+    <input class="form-control input-lg"
+            ng-model="forecastCtrl.zip"
+            ng-pattern="forecastCtrl.validZipRegex"
+            placeholder="Enter a zip code"
+            required>
+    </input>
+    <span class="input-group-btn">
+      <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+    </span>
+  </div>
+   <div ng-if="zipForm.$invalid && zipForm.$submitted"
+        class="alert alert-danger" role="alert">
+      <span class="glyphicon glyphicon-exclamation-sign"
+            aria-hidden="true">
+      </span>
+      <span class="sr-only">Error:</span>
+      Enter a valid 5 digit US zip code
+  </div>
+</form>
+  <h2 ng-if="forecastCtrl.loading" class="text-center"> 
+    Getting forecast... 
+  </h2>
+</div>
+</div>
